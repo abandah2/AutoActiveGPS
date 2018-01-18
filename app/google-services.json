@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "708379227235",
+    "firebase_url": "https://test-gps-7b8ee.firebaseio.com",
+    "project_id": "test-gps-7b8ee",
+    "storage_bucket": "test-gps-7b8ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708379227235:android:df3470ba859a492c",
+        "android_client_info": {
+          "package_name": "com.spartacus.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708379227235-nl94ph6set1on3d2gu6s54381kumd2ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpRQVrNMb8j1JbMknApwU6xzyOqvPa_N8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708379227235:android:e9a9cf6bb81e55b3",
+        "android_client_info": {
+          "package_name": "com.spartacus.autoactivegps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708379227235-nl94ph6set1on3d2gu6s54381kumd2ii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpRQVrNMb8j1JbMknApwU6xzyOqvPa_N8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
