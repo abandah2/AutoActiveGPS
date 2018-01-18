@@ -192,6 +192,7 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
 
         public void onResume(Context context) {
 
+
         }
     }
 }
