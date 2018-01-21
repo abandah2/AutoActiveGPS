@@ -13,13 +13,18 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.spartacus.autoactivegps.AutoActiveGPSUtil.ActiveGPS;
+
 /**
  * Created by Abandah on 1/7/2018.
+ *
  */
 public class PermissionUtil {
 
     @SuppressWarnings("WeakerAccess")
     public static OnResuleListener onResuleListener = null;
+
+    private static ActiveGPS.OnResuleListener GPSonResuleListener = null;
 
 
     private static int permission_requestCode;
@@ -43,6 +48,12 @@ public class PermissionUtil {
         return false;
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public static void checkPermission(Context context, String permission, ActiveGPS.OnResuleListener listener2, PermissionAskListener listener) {
+        GPSonResuleListener = listener2;
+        String[] per = permission.split("\\.");
+        checkPermission(context, permission, listener, RegMethods.getApplicationName(context) + " " + "Need your permission to Use " + per[per.length - 1]);
+    }
 
     @SuppressWarnings("WeakerAccess")
     public static void checkPermission(Context context, String permission, PermissionAskListener listener) {
@@ -57,6 +68,7 @@ public class PermissionUtil {
         PermissionUtil.permissionname = permission;
         //mcontext = context;
         onResuleListener = listener;
+
         permission_requestCode = RegMethods.RandomInt();
         openSetting_requestCode = RegMethods.RandomInt();
         while (permission_requestCode == openSetting_requestCode) {
@@ -215,13 +227,19 @@ public class PermissionUtil {
 
     public abstract static class OnResuleListener {
         public void onRequestPermissionsResult(Context context, int requestCode, String[] permissions, int[] grantResults) {
+            if (GPSonResuleListener != null)
+                GPSonResuleListener.onRequestPermissionsResult(context, requestCode, permissions, grantResults);
         }
 
         public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
+            if (GPSonResuleListener != null)
+                GPSonResuleListener.onActivityResult(context, requestCode, resultCode, data);
 
         }
 
         public void onResume(Context context) {
+            if (GPSonResuleListener != null)
+                GPSonResuleListener.onResume(context);
 
         }
     }
