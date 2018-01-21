@@ -1,6 +1,5 @@
 package com.spartacus.autoactivegps;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -11,14 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.spartacus.autoactivegps.AutoActiveGPSUtil.ActiveGPS;
-import com.spartacus.autoactivegps.PermissionUtil.Constants;
-import com.spartacus.autoactivegps.PermissionUtil.PermissionUtil;
 
-import static com.spartacus.autoactivegps.PermissionUtil.Constants.ACCESS_FINE_LOCATION;
-import static com.spartacus.autoactivegps.PermissionUtil.PermissionUtil.onResuleListener;
+import static com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.PermissionUtil.onResuleListener;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG =this.getClass().getName() ;
@@ -68,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(TAG,error);
                     }
 
-                });
+                },true);
                 }
 
         });

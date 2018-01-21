@@ -1,19 +1,15 @@
 package com.spartacus.autoactivegps.AutoActiveGPSUtil;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,14 +22,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.spartacus.autoactivegps.MainActivity;
-import com.spartacus.autoactivegps.PermissionUtil.Constants;
-import com.spartacus.autoactivegps.PermissionUtil.PermissionUtil;
+import com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.Constants;
+import com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.PermissionUtil;
 
-import java.security.Permission;
 import java.util.Random;
 
-import static com.spartacus.autoactivegps.PermissionUtil.Constants.ACCESS_FINE_LOCATION;
+import static com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.Constants.ACCESS_FINE_LOCATION;
 
 /**
  * Created by Abandah on 1/18/2018.
@@ -51,9 +45,14 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
     private static int requestCode;
     private Context context;
     private static ActiveGPS activeGPS = null;
-
+    private static boolean ActiveJustOnce=false;
 
     public void TurnOnGPS(final Context context, ActiveGPS activeGPS, final GPSListener listener) {
+        TurnOnGPS( context, activeGPS, listener, false) ;
+    }
+
+    public void TurnOnGPS(final Context context, ActiveGPS activeGPS, final GPSListener listener,boolean ActiveJustOnce) {
+        this.ActiveJustOnce=ActiveJustOnce;
         this.context = context;
         onResuleListener = listener;
         this.listener = listener;
@@ -245,6 +244,8 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
         }
 
         public void GPS_IS_ON(Location location) {
+            if(ActiveJustOnce)
+                googleApiClient.disconnect();
 
         }
 

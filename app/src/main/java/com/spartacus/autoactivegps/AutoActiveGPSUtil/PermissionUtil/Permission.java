@@ -1,7 +1,8 @@
-package com.spartacus.autoactivegps.PermissionUtil;
+package com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil;
 
 /**
  * Created by Abandah on 1/18/2018.
+ *
  */
 
 class Permission {

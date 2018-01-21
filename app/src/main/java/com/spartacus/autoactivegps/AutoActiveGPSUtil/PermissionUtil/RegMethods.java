@@ -1,4 +1,4 @@
-package com.spartacus.autoactivegps.PermissionUtil;
+package com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
