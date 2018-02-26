@@ -23,33 +23,25 @@ Step 2.
 
 Step 3. 
 ```java
-                 activeGPS.TurnOnGPS( new ActiveGPS.GPSListener() {
-
+activeGPS.TurnOnGPS( new ActiveGPS.GPSListener() {
                     @Override
                     public void GPS_IS_ON(Location location) {
-                        Log.e(TAG,new Object(){}.getClass().getEnclosingMethod().getName());
-                        Log.e(TAG,location.toString());
-                        latitudeTextView.setText(location.getLatitude()+"");
-                        longitudeTextView.setText(location.getLongitude()+"");
                     }
-
+                    
                     @Override
                     public void Permission_Grand_Cant_Turn_GPS_ON() {
-                        Log.e(TAG,new Object(){}.getClass().getEnclosingMethod().getName());
                     }
-
+                    
                     @Override
                     public void Permission_Denied() {
-                        Log.e(TAG,new Object(){}.getClass().getEnclosingMethod().getName());
                     }
+                    
                     @Override
                     public void OnError(String error) {
-                        Log.e(TAG,new Object(){}.getClass().getEnclosingMethod().getName());
-                        Log.e(TAG,error);
                     }
-
+                    
                 },true);
-                }
+                   
 
         });
 ```
