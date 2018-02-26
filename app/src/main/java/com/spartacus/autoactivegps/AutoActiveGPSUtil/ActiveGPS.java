@@ -23,7 +23,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.Constants;
-import com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.PermissionUtil;
+import com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.PermissionHelper;
 
 import java.util.Random;
 
@@ -31,48 +31,46 @@ import static com.spartacus.autoactivegps.AutoActiveGPSUtil.PermissionUtil.Const
 
 /**
  * Created by Abandah on 1/18/2018.
- *
  */
 
 public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private static OnResuleListener onResuleListener = null;
     private GPSListener listener = null;
-    private static GoogleApiClient googleApiClient;
-    private static Location mylocation;
+    private GoogleApiClient googleApiClient;
+    private Location mylocation;
     private static int requestCode;
     private Context context;
-    private static ActiveGPS activeGPS = null;
-    private static boolean ActiveJustOnce=false;
+    private static boolean ActiveJustOnce = false;
+    PermissionHelper permissionHelper=null;
 
-    public void TurnOnGPS(final Context context, ActiveGPS activeGPS, final GPSListener listener) {
-        TurnOnGPS( context, activeGPS, listener, false) ;
+    public ActiveGPS(Context context) {
+        this.context = context;
     }
 
-    public void TurnOnGPS(final Context context, ActiveGPS activeGPS, final GPSListener listener,boolean ActiveJustOnce) {
-        this.ActiveJustOnce=ActiveJustOnce;
-        this.context = context;
-        onResuleListener = listener;
+
+    public void TurnOnGPS(GPSListener listener) {
+        TurnOnGPS(listener, false);
+    }
+
+    public void TurnOnGPS(final GPSListener listener, boolean ActiveJustOnce) {
+        this.ActiveJustOnce = ActiveJustOnce;
         this.listener = listener;
-        this.activeGPS = activeGPS;
-        PermissionUtil.checkPermission(context, ACCESS_FINE_LOCATION,listener, new PermissionUtil.PermissionAskListener() {
+        permissionHelper= new PermissionHelper(context);
+        permissionHelper.checkPermission(ACCESS_FINE_LOCATION, new PermissionHelper.PermissionAskListener() {
             @Override
             public void onDenied() {
-                super.onDenied();
                 listener.Permission_Denied();
             }
 
             @Override
             public void onGranted() {
-                super.onGranted();
                 AskForLocationPerm(context);
             }
 
             @Override
             public void AllReadyGranted() {
-                super.AllReadyGranted();
                 AskForLocationPerm(context);
 
             }
@@ -81,17 +79,15 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
     }
 
     private void AskForLocationPerm(final Context context) {
-        PermissionUtil.checkPermission(context, Constants.ACCESS_COARSE_LOCATION, new PermissionUtil.PermissionAskListener() {
+        permissionHelper.checkPermission( Constants.ACCESS_COARSE_LOCATION, new PermissionHelper.PermissionAskListener() {
             @Override
             public void onDenied() {
-                super.onDenied();
                 listener.Permission_Denied();
 
             }
 
             @Override
             public void onGranted() {
-                super.onGranted();
                 setUpGClient(context);
 
 
@@ -99,18 +95,11 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
 
             @Override
             public void AllReadyGranted() {
-                super.AllReadyGranted();
                 setUpGClient(context);
 
 
             }
 
-            @Override
-            public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
-                super.onActivityResult(context, requestCode, resultCode, data);
-                ActiveGPS.onResuleListener.onActivityResult(context, requestCode, resultCode, data);
-
-            }
         });
 
     }
@@ -126,7 +115,7 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
             googleApiClient.connect();
         } catch (Exception e) {
             e.printStackTrace();
-            onResuleListener.OnError(e.getMessage());
+            listener.OnError(e.getMessage());
         }
     }
 
@@ -138,7 +127,7 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onConnectionSuspended(int i) {
-        onResuleListener.OnError("ConnectionSuspended" + i);
+        listener.OnError("ConnectionSuspended" + i);
 
     }
 
@@ -154,6 +143,8 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
             Double latitude = mylocation.getLatitude();
             Double longitude = mylocation.getLongitude();
             listener.GPS_IS_ON(mylocation);
+            if (ActiveJustOnce)
+                googleApiClient.disconnect();
             //Or Do whatever you want with your location
         }
     }
@@ -198,7 +189,7 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
                                     status.startResolutionForResult((Activity) context,
                                             requestCode);
                                 } catch (IntentSender.SendIntentException e) {
-                                    onResuleListener.OnError(e.getMessage());
+                                    listener.OnError(e.getMessage());
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
@@ -212,11 +203,11 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
                     }
                 });
             } else
-                onResuleListener.OnError("googleApiClient is not Connected");
-        } else onResuleListener.OnError("googleApiClient == null");
+                listener.OnError("googleApiClient is not Connected");
+        } else listener.OnError("googleApiClient == null");
     }
 
-    private static int RandomInt() {
+    private int RandomInt() {
         int min = 0;
         int max = 500;
 
@@ -225,59 +216,49 @@ public class ActiveGPS implements GoogleApiClient.ConnectionCallbacks,
 
     }
 
-    public abstract static class GPSListener extends OnResuleListener {
+    public interface GPSListener {
 
-        @Override
-        public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(context, requestCode, resultCode, data);
-            if (requestCode == ActiveGPS.requestCode) {
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        activeGPS.getMyLocation();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        onResuleListener.OnError("RESULT_CANCELED");
-                        break;
-                }
+
+        public void GPS_IS_ON(Location location) ;
+
+        public void Permission_Grand_Cant_Turn_GPS_ON();
+        public void Permission_Denied() ;
+
+        public void OnError(String error) ;
+
+    }
+
+    public void onRequestPermissionsResult(Context context, int requestCode, String[] permissions, int[] grantResults) {
+        if (permissionHelper!=null)
+
+            permissionHelper.onRequestPermissionsResult(context, requestCode,permissions,grantResults);
+
+    }
+
+    public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
+        if (requestCode == ActiveGPS.requestCode) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    getMyLocation();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    listener.OnError("RESULT_CANCELED");
+                    break;
             }
-
         }
+        if (permissionHelper!=null)
 
-        public void GPS_IS_ON(Location location) {
-            if(ActiveJustOnce)
-                googleApiClient.disconnect();
+            permissionHelper.onActivityResult(context,requestCode,resultCode,data);
 
-        }
-
-        public void Permission_Grand_Cant_Turn_GPS_ON() {
-        }
-
-        public void Permission_Denied() {
-
-        }
-
-        @Override
-        public void OnError(String error) {
-
-        }
 
     }
 
-    public abstract static class OnResuleListener {
-        public void onRequestPermissionsResult(Context context, int requestCode, String[] permissions, int[] grantResults) {
-        }
+    public void onResume(Context context) {
+        if (permissionHelper!=null)
+        permissionHelper.onResume(context);
 
-        public void onActivityResult(Context context, int requestCode, int resultCode, Intent data) {
-
-        }
-
-        public void onResume(Context context) {
-
-
-        }
-
-        public void OnError(String error) {
-
-        }
     }
+
+
+
 }

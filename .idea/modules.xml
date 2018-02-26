@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AutoActiveGPS.iml" filepath="$PROJECT_DIR$/AutoActiveGPS.iml" />
+      <module fileurl="file://C:\Users\Abandah\Downloads\FaceRecognitionApp-master\FaceRecognitionApp-master\AutoActiveGPS\AutoActiveGPS.iml" filepath="C:\Users\Abandah\Downloads\FaceRecognitionApp-master\FaceRecognitionApp-master\AutoActiveGPS\AutoActiveGPS.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Abandah\Downloads\FaceRecognitionApp-master\FaceRecognitionApp-master\AutoActiveGPS\app\app.iml" filepath="C:\Users\Abandah\Downloads\FaceRecognitionApp-master\FaceRecognitionApp-master\AutoActiveGPS\app\app.iml" />
     </modules>
   </component>
 </project>
